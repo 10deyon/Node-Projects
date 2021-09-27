@@ -1,7 +1,4 @@
 /node_modules
 /abc
-/controller/authController.js
 /controller/userController.js
-/models/UserModel.js
-/routes/userRoutes.js
 /Services/Email.js
