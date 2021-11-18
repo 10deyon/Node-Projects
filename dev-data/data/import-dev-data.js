@@ -2,6 +2,9 @@ const fs = require('fs');
 const dotenv = require('dotenv');
 const mongoose = require('mongoose');
 const Tour = require('./../../app/Models/TourModel');
+const User = require('./../../app/Models/UserModel');
+const Review = require('./../../app/Models/ReviewModel');
+
 
 dotenv.config({ path: './config.env' });
 
@@ -30,11 +33,15 @@ mongoose.connect(DB, {
 //     }
 // }
 const tours = JSON.parse(fs.readFileSync(`${__dirname}/tours.json`, 'utf8'));
+const users = JSON.parse(fs.readFileSync(`${__dirname}/users.json`, 'utf8'));
+const reviews = JSON.parse(fs.readFileSync(`${__dirname}/reviews.json`, 'utf8'));
 
 //IMPORT DATA INTO DB
 const importData = async () => {
     try {
         await Tour.create(tours);
+        await User.create(users, { validateBeforeSave: false });
+        await Review.create(reviews);
         console.log("successful");
     } catch (error) {
         console.log(error);

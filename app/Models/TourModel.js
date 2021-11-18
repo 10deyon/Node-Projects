@@ -41,7 +41,8 @@ const tourSchema = new mongoose.Schema({
         type: Number,
         default: 4.5,
         maxLength: [5, 'ratings must not be greater than 5 characters'],
-        minLength: [1, 'ratings must not be lesser than 1 characters']
+        minLength: [1, 'ratings must not be lesser than 1 characters'],
+        set: val => Math.round(val * 10) / 10
     },
     ratingsQuantity: {
         type: Number,
@@ -122,6 +123,13 @@ const tourSchema = new mongoose.Schema({
 }
 );
 
+//NB: THIS IS USED FOR INDEXING SO THAT MONGOOSE WILL NOT SEARCH ALL DOCUMENTS (DESC: -1, ASC: 1)
+//ALSO NOTE THAT, WHEN A FIELD IS SET TO UNIQUE, MONGOOSE WILL AUTOMATICALLY INDEX SUCH FIELD
+// tourSchema.index( {price: 1} );
+tourSchema.index({ price: 1, ratingsAverage: -1 });
+tourSchema.index({ slug: 1 });
+tourSchema.index({ startLocation: '2dshpere' });
+
 //NB: When you want to use #this, always use the normal function and arrow function
 tourSchema.virtual('durationWeeks').get(function() {
     return this.duration/7
@@ -194,14 +202,14 @@ tourSchema.post(/^find/, function(docs, next) {
 
 
 //AGGREGATION MIDDLEWARE
-tourSchema.pre('aggregate', function(next) {
-    this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });
-    next();
-});
-
 tourSchema.post('aggregate', function(docs, next) {
     next();
 });
+
+// tourSchema.pre('aggregate', function(next) {
+//     this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });
+//     next();
+// });
 
 const Tour = mongoose.model('Tour', tourSchema);
 

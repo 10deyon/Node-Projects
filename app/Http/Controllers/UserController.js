@@ -13,19 +13,6 @@ const filterObj = (object, ...allowedFields) => {
     return newObj;
 }
 
-exports.getUsers = catchAsync(async (req, res, next) => {
-    const users = await User.find();
-
-    res.status(200).json({
-        status: "success",
-        result: users.length,
-        requested_at: req.requestTime,
-        data: {
-            users
-        }
-    });
-});
-
 exports.updateMyPassword = catchAsync(async (req, res, next) => {
     if (req.body.password || req.body.passwordConfirm) {
         return next(new AppError('Invalid route. Please user /updatePassword', 400));
@@ -59,35 +46,50 @@ exports.createUser = (req, res) => {
     res.status(500).json({
         status: "error",
         requested_at: req.requestTime,
-        message: "not available yet"
+        message: "This route is not available, use /signup instead"
     });
 };
 
-exports.updateUser = (req, res) => {
-    res.status(500).json({
-        status: "error",
-        requested_at: req.requestTime,
-        message: "not available yet"
-    });
-};
+exports.getMe = (req, res, next) => {
+    req.params.id = req.user.id;
+    next();
+}
 
-exports.getUser = (req, res) => {
-    res.status(500).json({
-        status: "error",
-        requested_at: req.requestTime,
-        message: "not available yet"
-    });
-};
+exports.getUsers = factory.getAll(User);
+exports.getUser = factory.getOne(User);
+exports.deleteUser = factory.deleteOne(User);
+exports.updateUser = factory.updateOne(User);
 
-// exports.deleteUser = factory.deleteOne(User);
 
-exports.deleteUser = (req, res) => {
-    res.status(500).json({
-        status: "error",
-        requested_at: req.requestTime,
-        message: "not available yet"
-    });
-};
+
+// exports.getUsers = catchAsync(async (req, res, next) => {
+//     const users = await User.find();
+
+//     res.status(200).json({
+//         status: "success",
+//         result: users.length,
+//         requested_at: req.requestTime,
+//         data: {
+//             users
+//         }
+//     });
+// });
+
+// exports.updateUser = (req, res) => {
+//     res.status(500).json({
+//         status: "error",
+//         requested_at: req.requestTime,
+//         message: "not available yet"
+//     });
+// };
+
+// exports.deleteUser = (req, res) => {
+//     res.status(500).json({
+//         status: "error",
+//         requested_at: req.requestTime,
+//         message: "not available yet"
+//     });
+// };
 
 
 // async function listCourses() {

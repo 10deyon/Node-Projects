@@ -9,18 +9,23 @@ router.post('/signup', authController.signUp);
 router.post('/login', authController.login);
 router.post('/forgotPassword', authController.forgotPassword);
 router.patch('/resetPassword/:token', authController.resetPassword);
-router.patch('/updatePassword', authController.protect, authController.updatePassword);
 
-router.patch('/updateMe', authController.protect, userController.updateMyPassword);
-router.delete('/deleteMe', authController.protect, userController.deleteMyProfile);
+//PROTECT ALL ROUTES AFTER THIS MIDDLEWARE
+router.use(authController.protect);
 
+router.get('/me', userController.getMe, userController.getUser);
+router.patch('/updateMe', userController.updateMyPassword);
+router.delete('/deleteMe', userController.deleteMyProfile);
+router.patch('/updatePassword', authController.updatePassword);
+
+router.use(authController.restrictTo('admin'));
 router.route('/')
     .get(userController.getUsers)
     .post(userController.createUser);
 
 router.route('/:id')
     .get(userController.getUser)
-    // .patch(updateUser)
+    .patch(userController.updateUser)
     .delete(userController.deleteUser);
 
 module.exports = router;
