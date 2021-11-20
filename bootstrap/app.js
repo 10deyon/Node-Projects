@@ -5,14 +5,23 @@ const helmet = require('helmet');
 const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
 const hpp = require('hpp');
+const compression = require('compression');
+const cors = require('cors');
 
 const AppError = require('../app/Utils/AppError');
-const GlobalErrorHandler = require('../app/Http/Controllers/ErrorController');
+const GlobalErrorHandler = require('../app/Controllers/ErrorController');
 const tourRouter = require('./../routes/tourRoutes');
 const userRouter = require('./../routes/userRoutes');
 const reviewRouter = require('./../routes/reviewRoutes');
 
 const app = express();
+
+// set this so as to have access to the https value from heroku
+app.enable('trust proxy');
+
+app.use(cors());
+app.options('*', cors());
+
 
 // GLOBAL MIDDLEWARES
 // CREATING A MIDDLEWARE (ACCEPTS 3 PARAMETERS AND MUST CALL THE NEXT FUNCTION)
@@ -44,6 +53,9 @@ app.use(xss());
 app.use(hpp({
     whitelist: ['duration', 'ratingsQuantity', 'ratingsAverage', 'maxGroupSize', 'difficulty', 'price']
 }));
+
+// this middleware compresses all text except images that is being sent to client
+app.use(compression());
 
 // Serve static files
 app.use(express.static(`${__dirname}/public`))

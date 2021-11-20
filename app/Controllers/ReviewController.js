@@ -1,8 +1,5 @@
-const Review = require('../../Models/ReviewModel');
+const Review = require('../Models/ReviewModel');
 const factory = require('./HandlerFactory');
-// const AppError = require('../../Utils/AppError');
-// const catchAsync = require('../../Utils/CatchAsync');
-
 
 //THIS IS A MIDDLEWARE
 exports.setTourUserIds = (req, res, next) => {
@@ -17,6 +14,9 @@ exports.createReview = factory.createOne(Review);
 exports.updateReview = factory.updateOne(Review);
 exports.deleteReview = factory.deleteOne(Review);
 
+
+// const AppError = require('../../Utils/AppError');
+// const catchAsync = require('../../Utils/CatchAsync');
 
 // exports.getReviews = catchAsync(async (req, res, next) => {
 // 	let filter = {};

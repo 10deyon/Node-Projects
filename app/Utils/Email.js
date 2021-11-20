@@ -12,7 +12,7 @@ sendEmailToUser = async function (options) {
         // Activate in gmail, 'less secure app' option
     })
     
-    console.log(transporter);
+    // console.log(transporter);
 
     // define email options
     const mailOptions = {

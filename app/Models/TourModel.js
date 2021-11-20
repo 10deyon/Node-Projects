@@ -15,7 +15,7 @@ const tourSchema = new mongoose.Schema({
         trim: true,
         maxLength: [40, 'Tour name must not be greater than 40 characters'],
         minLength: [10, 'Tour name must not be lesser than 10 characters'],
-        // validate: [ validator.isAlpha, 'name must be alphabets' ]
+        validate: [ validator.isAlpha, 'name must be alphabets' ]
     },
     price: {
         type: Number,
@@ -145,15 +145,12 @@ tourSchema.pre('save', function(next) {
     next();
 });
 
-
 // This is used to embed guides in the tour model
 // tourSchema.pre('save', async function(next) {
 //     const guidesPromises = this.guides.map(async id => await User.findById(id));
 //     this.guides = await Promises.all(guidesPromises)
 //     next();
 // });
-
-
 
 // tourSchema.pre('save', function(next) {
 //     //this is used to create a slug in the list of object to be created on DB
@@ -171,7 +168,6 @@ tourSchema.pre('save', function(next) {
 tourSchema.virtual('durationWeeks').get(function(){
     return this.duration/7;
 });
-
 
 //Child referencing (Virtual populate)
 tourSchema.virtual('reviews', {
@@ -195,11 +191,10 @@ tourSchema.pre(/^find/, function(next) {
     next();
 });
 
-tourSchema.post(/^find/, function(docs, next) {
-    console.log(`Query took ${Date.now() - this.start} milliseconds`);
-    next();
-});
-
+// tourSchema.post(/^find/, function(docs, next) {
+//     console.log(`Query took ${Date.now() - this.start} milliseconds`);
+//     next();
+// });
 
 //AGGREGATION MIDDLEWARE
 tourSchema.post('aggregate', function(docs, next) {

@@ -1,10 +1,11 @@
 const crypto = require('crypto');
 const { promisify } = require('util');
-const User = require('../../Models/UserModel');
-const catchAsync = require('../../Utils/CatchAsync');
 const jwt = require('jsonwebtoken');
-const AppError = require('../../Utils/AppError');
-const { sendEmailToUser } = require('../../Utils/Email');
+
+const User = require('../Models/UserModel');
+const catchAsync = require('../Utils/CatchAsync');
+const AppError = require('../Utils/AppError');
+const { sendEmailToUser } = require('../Utils/Email');
 
 const signToken = id => {
     return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -12,11 +13,13 @@ const signToken = id => {
     });
 }
 
-const createSendToken = (user, statusCode, res) => {
+const createSendToken = (user, statusCode, req, res) => {
     const token = signToken(user._id);
     const cookieOptions = {
         expiresIn: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000),
-        httpOnly: true
+        httpOnly: true,
+        // HEROKU SPECIFIC, test for a secure connection (make sure the proxy is set on the app.js)
+        secure: req.secure || req.headers('x-forwarded-proto') === 'https'
     }
 
     if (process.env.NODE_ENV === 'production') cookieOptions.secure = true;
@@ -44,7 +47,7 @@ exports.signUp = catchAsync(async (req, res) => {
         role: req.body.role
     });
     
-    createSendToken(user, 201, res);
+    createSendToken(user, 201, req, res);
 });
 
 exports.login = async (req, res, next) => {
@@ -54,7 +57,7 @@ exports.login = async (req, res, next) => {
     const user = await User.findOne({ email }).select('+password');
     if(!user || !(await user.correctPassword(password, user.password))) return next(new AppError('Incorrect email or password', 401));
 
-    createSendToken(user, 200, res);
+    createSendToken(user, 200, req, res);
 }
 
 exports.protect = catchAsync(async (req, res, next) => {
@@ -102,7 +105,7 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
         message
     });
 
-    console.log({url: resetURL, reset: resetToken, user: user, message: message});
+    // console.log({url: resetURL, reset: resetToken, user: user, message: message});
     try {
         sendEmailToUser({
             email: user.email,
@@ -136,7 +139,7 @@ exports.resetPassword = catchAsync(async(req, res, next) => {
     user.passwordResetExpires = undefined;
     await user.save();
 
-    createSendToken(user, 200, res);
+    createSendToken(user, 200, req, res);
 });
 
 exports.updatePassword = catchAsync(async (req, res, next) => {
@@ -150,5 +153,5 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
     user.passwordConfirm = req.body.passwordConfirm;
     await user.save();
 
-    createSendToken(user, 200, res);
+    createSendToken(user, 200, req, res);
 });
