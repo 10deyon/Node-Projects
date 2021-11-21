@@ -2,6 +2,7 @@ const crypto = require('crypto');
 const mongoose = require('mongoose');
 const validator = require('validator');
 const bcrypt = require('bcryptjs');
+const { join } = require('path');
 
 const userSchema = new mongoose.Schema(
     {
@@ -58,6 +59,7 @@ const userSchema = new mongoose.Schema(
     }
 );
 
+
 userSchema.pre('save', async function(next) {
     // Run this if password was actually modified
     if(!this.isModified('password')) return next();
@@ -108,5 +110,15 @@ userSchema.methods.createPasswordResetToken = function () {
 }
 
 const User = mongoose.model('User', userSchema);
+
+// function validateUser(user) {
+//     const schema = {
+//         name: join.string().min(5).max(50).required(),
+//         email: join.string().min(5).max(255).required().email(),
+//         password: join.string().min(5).max(255).required(),
+//     }
+
+//     return Joi.validate(user, schema);
+// }
 
 module.exports = User;

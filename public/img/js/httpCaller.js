@@ -32,22 +32,3 @@ export const postCaller = async () => {
         showAlert('error', 'Error handling user login, try again');
     }
 }
-
-
-
-// FAWN FOR TRANSACTIONS LIKE DB:TRANSACTIONS
-// async() = {
-//     const course = await Course.findById(courseId);
-//     course.author.name = "New Value",
-//     course.save();
-
-//     await Course.update({_id: courseId}, {
-//         $set: {
-//             subModel.fieldName: "New Value"
-//         }
-
-//         $unset: {
-//             subModel.fieldName
-//         }
-//     });
-// }

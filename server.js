@@ -45,3 +45,5 @@ process.on('SIGTERM', err => {
         process.exit(1);
     });
 });
+
+module.exports = server;
