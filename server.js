@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 
 dotenv.config({ path: './config.env' });
-const app = require('./app');
+const app = require('./index');
 
 const DB = process.env.DB_CONNECTION.replace('<PASSWORD>', process.env.DB_PASSWORD);
 
@@ -37,3 +37,13 @@ process.on('uncaughtException', err => {
         process.exit(1);
     });
 });
+
+process.on('SIGTERM', err => {
+    console.log('SIGTERM RECEIVED. shutting down');
+    server.close(() => {
+        console.log("process terminated");
+        process.exit(1);
+    });
+});
+
+module.exports = server;
