@@ -1,3 +1,5 @@
+However, I believe that embracing interdependence, proactivity and teachability will help in your journey.
+
 # PACKAGES
 ### FAWN FOR TRANSACTIONS LIKE DB:TRANSACTIONS
 ### TEST FRAMEWORKS: jasmine (earlier), mocha (most popular with plugins like chai and sinon), jest (newest used by facebook)

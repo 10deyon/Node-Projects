@@ -1,4 +1,5 @@
 const express = require('express');
+const validateObjectId = require('./../app/Middleware/validateObjectId');
 const reviewController = require('../app/Controllers/ReviewController');
 const authController = require('../app/Controllers/AuthController');
 
@@ -22,6 +23,7 @@ router.route('/')
     );
 
 router.route('/:id')
+    // .get(validateObjectId, reviewController.getReview)
     .get(reviewController.getReview)
     .patch(authController.restrictTo('user', 'admin'), reviewController.updateReview)
     .delete(authController.restrictTo('user', 'admin'), reviewController.deleteReview);
