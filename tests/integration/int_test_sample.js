@@ -53,6 +53,7 @@ describe('/api/v1/endpoint', () => {
             .set('x-auth-token', token)
             .send({ name });
         }
+        // const exec = async()=>await request(server).post()
     
         beforeEach(() => {
             token = new User().generateAuthToken();
